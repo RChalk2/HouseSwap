@@ -19,6 +19,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('users.urls')),  # Include the URLs of the users app
+    path('', include('kswap.urls')),  # Include the URLs of the users app
 ]
 
