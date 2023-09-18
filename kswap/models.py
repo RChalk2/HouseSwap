@@ -1,46 +1,133 @@
+# Models created:
+# Kashrut
+# User
+# Property
+#
+
 from django.db import models
+
+# Used to generate URLs by reversing the URL patterns
+from django.urls import reverse
+
+# uuid is a library that can generate random 128 bit objects for unqiue ids
+import uuid
+
+from cities_light.models import City
+from cities_light.models import Country
+
+
+class Kashrut(models.Model):
+    """
+    Model representing a kashrut organisation.
+    Right now we only have the name but we could include more detail
+    usefull for users, such as
+     - who is the Rabbi that supervises the organisation
+     - a contact telephone number
+    """
+    name = models.CharField(max_length=200, help_text='Enter a kashrut organisation')
+
+    class Meta:
+        # ensure this table is always displayed in alphabetical order
+        ordering = ['name']
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.name
+
 
 class User(models.Model):
-    UserID = models.AutoField(primary_key=True)
-    MobileNumber = models.CharField(max_length=15, unique=True)
-    Rabbi = models.CharField(max_length=100)
-    Kashrut = models.CharField(max_length=200)
-    email = models.EmailField(max_length=255, unique=True)
-    UserRating = models.FloatField(null=True, blank=True)
+    """
+       Model representing a user
+       Notes - each user must have at least one property, but may have more
+             - possibly reviews could be linked to users - but it seems easier
+               to link reviews to properties - which will then link back to users
+               since each property has only one user
+    """
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4,
+                          help_text='Unique ID for this user')
 
+    # Ideally phone numbers should be validated.  One way to do this is using
+    # the package: django-phonenumber-field. See the link below for details
+    # https://django-phonenumber-field.readthedocs.io/en/latest/index.html
+    # At the moment I stick with a charfield
+    telno_mobile = models.CharField(max_length=15, unique=True)
 
-    
+    # Ideally there should be a separate table of Rabbis - which are somehow
+    # authenticated.  And then the user chooses a drop down from the rabbis table
+    # and if the Rabbi is not available then there would be a way to ask for one
+    # to be authenticated and added
+    rabbi = models.CharField(max_length=100)
+
+    # Kashrut could be freeform - but I have chosen to have a separate table
+    # The table could be maintained by admin only so that users have to select
+    # from a given known authenticated list
+    # There could be more than one kashrut that a user is comfortable with
+    # but I have used a ForeignKey rather than onetomany
+    # on_delete=models.RESTRICT means that the kashrut cannot be delete whilst
+    # any user has selected it
+    # null=False means that the database will not accept a null value - a user has to select
+    # a kashrut.  This is not ideal if the kashrut they use is not in the Kashrut table
+    # however admin can ensure that "not in list" is in the Kashrut table - and this
+    # could raise an action for admin to contact the user and find their kashrut
+    kashrut = models.ForeignKey('Kashrut', on_delete=models.RESTRICT, null=False)
+
+    email = models.EmailField(max_length=255, unique=True, default="xxx@xxx")
+
+    # user rating will need to be displayed by finding the mean of user reviews
+    # from the reviews table
+    #UserRating = models.FloatField(null=True, blank=True)
+
     def __str__(self):
-        return self.MobileNumber
-from django.db import models
+        return self.telno_mobile
 
-from users.models import User
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for this user."""
+        return reverse('user-detail', args=[str(self.id)])
+
 
 class Property(models.Model):
-    PropertyID = models.AutoField(primary_key=True)
-    City = models.CharField(max_length=100)
-    Country = models.CharField(max_length=100)
-    Postcode = models.CharField(max_length=20)
-    Address = models.TextField()
-    NoOfRooms = models.PositiveIntegerField()
-    EstimatedValue = models.FloatField()
-    PropertyType = models.CharField(max_length=100)
-    Amenities = models.TextField()
-    PetFriendly = models.BooleanField()
-    AccessibilityFeatures = models.TextField()
-    ProximityToPublicTransport = models.TextField()
-    NearbyAttractions = models.TextField()
-    Suckah = models.BooleanField()
-    PassoverKitchen = models.BooleanField()
-    MaxOccupancy = models.PositiveIntegerField()
-    SmokingAllowed = models.BooleanField()
-    PicturesOfProperty = models.ImageField(upload_to='properties/')
-    HomeDescription = models.TextField()
-    PropertyRating = models.FloatField(null=True, blank=True)
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4,
+                          help_text='Unique ID for this property')
 
-    
-    # Assuming each property is tied to a user
+    # to store cities and countries I looked at this link
+    # https://medium.com/@FatemeFouladkar/how-to-add-country-and-city-field-in-django-864f80b4c19e
+    # I needed to pip3 install django-cities-light - and this will be added to the venv
+    # I also needed to add   'cities_light', to INSTALLED_APPS and then
+    #  python manage.py makemigrations
+    #  python manage.py migrate
+    # to add the (empty) models to sqllite3 database
+    # then populate with
+    # python manage.py cities_light
+    #city = models.CharField(max_length=100)
+    #country = models.CharField(max_length=100)
+    city = models.ForeignKey(City, on_delete=models.RESTRICT, null=False)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, null=False)
+
+    postcode = models.CharField(max_length=20)
+    address = models.TextField()
+    no_of_rooms = models.PositiveIntegerField()
+    estimated_value = models.FloatField()
+    property_type = models.CharField(max_length=100)
+    amenities = models.TextField()
+    pet_friendly = models.BooleanField()
+    accessibility_features = models.TextField()
+    proximity_to_public_transport = models.TextField()
+    nearby_attractions = models.TextField()
+    succah = models.BooleanField()
+    passover_kitchen = models.BooleanField()
+    max_occupancy = models.PositiveIntegerField()
+    smoking_allowed = models.BooleanField()
+    pictures_of_property = models.ImageField(upload_to='properties/')
+    home_description = models.TextField()
+
+    # property rating will need to come from an average of the reviews
+    # property_rating = models.FloatField(null=True, blank=True)
+
+
+    # Assuming each property is tied to a one user
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
     def __str__(self):
-        return self.Address
+        return self.address
