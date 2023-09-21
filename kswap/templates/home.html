@@ -1,0 +1,17 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+ <h1>kswap hopefully</h1>
+ <p>
+   Welcome to kswap, your gateway to exciting and free holiday accommodation. Developed by the guru
+   <em>Blank </em>!
+ </p>
+
+ <p>kswap only launched recently but already has a massive:</p>
+ <ul>
+   <li><strong>Properties available:</strong> {{ num_properties }}</li>
+   <li><strong>Users:</strong> {{ num_users }}</li>
+   <li><strong>And this many mouthwatering kashrut authorities:</strong> {{ num_kashrut }}</li>
+ </ul>
+{% endblock %}
