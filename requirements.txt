@@ -3,6 +3,8 @@ dj-database-url==2.1.0
 Django==4.2.5
 django-autoslug==1.9.9
 django-cities-light==3.9.2
+gunicorn==21.2.0
+packaging==23.1
 Pillow==10.0.0
 progressbar2==4.2.0
 psycopg2-binary==2.9.7
