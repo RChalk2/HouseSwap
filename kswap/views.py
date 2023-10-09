@@ -1,39 +1,48 @@
 from django.shortcuts import render, redirect
-from .forms import RegistrationForm
-from .models import Kashrut, User, Property, Image
+
+from .models import Kashrut, Profile, Property, Image
+from django.contrib.auth.models import User
+
+from .forms import ProfileForm
+from django.contrib import messages
+
+# This import allows me to add @login_required before any view that I only
+# want to be available to users who are logged in
+from django.contrib.auth.decorators import login_required
 
 
-# The view function below is based on code from the local library tutorial index page at
+# The view below updates a user profile - it is copied from a tutorial
+def update_profile(request):
+    # POST is adding data to the Profile table in my database
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=request.user.profile)
+        # This checks if the data is valid.  Because I removed most checks all data should be valid
+        if form.is_valid():
+            form.save()
+            messages.success(request, "You have successfully updated your profile.")
+            return redirect("home")
+    else:
+        form = ProfileForm(instance=request.user.profile)
+    return render(request, "profile.html", {"form": form})
+
+
+# The view function below is based on the local library tutorial index page
 # https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Home_page
-# The "request" object passed to the function below is an "HttpRequest" object
+# The "request" passed to the function below is an "HttpRequest" object
 # django docs say that
 # When a page is requested, Django creates an HttpRequest object that
 # contains information about the request.
 def home(request):
-
     # Count the number of properties and users
     num_properties = Property.objects.all().count()
     num_users = User.objects.all().count()
     num_kashrut = Kashrut.objects.count()
 
     context = {
-        'num_properties': num_properties,
-        'num_users': num_users,
-        'num_kashrut': num_kashrut,
+        "num_properties": num_properties,
+        "num_users": num_users,
+        "num_kashrut": num_kashrut,
     }
 
-    # Render the template home.html with data in the context dictionary above
-    return render(request, 'home.html', context=context)
-
-
-def register(request):
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # you might want to authenticate and log the user in at this point
-            # then, redirect to a success page or homepage
-            return redirect('some-view-name')
-    else:
-        form = RegistrationForm()
-    return render(request, 'users/register.html', {'form': form})
+    # Render the template home.html with data in the context dictionary
+    return render(request, "home.html", context=context)

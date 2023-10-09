@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %} {% block content %}
+<!--
+method="post" means that the browser will send the Profile data entered
+to the Profile table in my database
+
+In the code below crsf stands for Cross Site Request Forgery
+and it is a token that Django creates to avoid attacks on my database
+
+The object 'form' is passed by the view and contains the fields in the Profile
+
+form.as_p is a method which tells Django to render each field as a separate paragraph
+This saves me having to do each field separately
+-->
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Save changes</button>
+</form>
+{% endblock %}

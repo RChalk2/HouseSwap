@@ -1,10 +1,16 @@
 # Models created:
 # Kashrut
-# User
+# User renamed to Profile avoid clash django.contrib.auth.models import User
 # Property
-#
+
 
 from django.db import models
+from django.contrib.auth.models import User
+
+# The following two imports are used in the code below to make sure that
+# any time a User is created an entry is also created in the Profile table
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Used to generate URLs by reversing the URL patterns
 from django.urls import reverse
@@ -20,9 +26,9 @@ class Kashrut(models.Model):
     """
     Model representing a kashrut organisation.
     Right now we only have the name but we could include more detail
-    usefull for users, such as
-     - who is the Rabbi that supervises the organisation
-     - a contact telephone number
+    useful for users, such as
+         - who is the Rabbi that supervises the organisation
+         - a contact telephone number
     """
 
     name = models.CharField(max_length=200, help_text="Enter a kashrut organisation")
@@ -36,24 +42,30 @@ class Kashrut(models.Model):
         return self.name
 
 
-class User(models.Model):
+class Profile(models.Model):
     """
-    Model representing a user
+    Model extending the profile information of the Django User table
     Notes - each user must have at least one property, but may have more
-          - possibly reviews could be linked to users - but it seems easier
-            to link reviews to properties - which will then link back to users
-            since each property has only one user
+                 - possibly reviews could be linked to users - but it seems easier
+                 to link reviews to properties - which will then link back to users
+                 since each property has only one user
     """
 
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, help_text="Unique ID for this user"
-    )
+    # id = models.UUIDField(
+    #   	 primary_key=True, default=uuid.uuid4, help_text="Unique ID for this user"
+    # )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Ideally phone numbers should be validated.  One way to do this is using
     # the package: django-phonenumber-field. See the link below for details
     # https://django-phonenumber-field.readthedocs.io/en/latest/index.html
     # At the moment I stick with a charfield
-    telno_mobile = models.CharField(max_length=15, unique=True)
+    # Originally I had unique=True - this seems sensible since each
+    # user should only register once.  But it caused problems in testing
+    # since I was leaving it blank or I had to be careful to make up
+    # unique telephone numbers.  Also if one user puts in a wrong number
+    # and then another user puts in their real number it would fail
+    telno_mobile = models.CharField(max_length=15, unique=False)
 
     # Ideally there should be a separate table of Rabbis - which are somehow
     # authenticated.  And then the user chooses a drop down from the rabbis table
@@ -68,13 +80,13 @@ class User(models.Model):
     # but I have used a ForeignKey rather than onetomany
     # on_delete=models.RESTRICT means that the kashrut cannot be delete whilst
     # any user has selected it
-    # null=False means that the database will not accept a null value - a user has to select
+    # null=False - was used originally means that the database will not accept a null value - a user has to select
     # a kashrut.  This is not ideal if the kashrut they use is not in the Kashrut table
     # however admin can ensure that "not in list" is in the Kashrut table - and this
     # could raise an action for admin to contact the user and find their kashrut
-    kashrut = models.ForeignKey("Kashrut", on_delete=models.RESTRICT, null=False)
+    kashrut = models.ForeignKey("Kashrut", on_delete=models.RESTRICT, null=True)
 
-    email = models.EmailField(max_length=255, unique=True, default="xxx@xxx")
+    # email = models.EmailField(max_length=255, unique=True, default="xxx@xxx")
 
     # user rating will need to be displayed by finding the mean of user reviews
     # from the reviews table
@@ -86,6 +98,20 @@ class User(models.Model):
     def get_absolute_url(self):
         """Returns the URL to access a detail record for this user."""
         return reverse("user-detail", args=[str(self.id)])
+
+
+# @receiver in the two functions below, add these two functions as
+# methods to the User table and makes sure that each time a User is created
+# then an entry profile is created.  Also the same for saved
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class Property(models.Model):
