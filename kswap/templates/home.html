@@ -1,16 +1,23 @@
+{% extends "base_generic.html" %} {% block content %}
+<h1>kswap</h1>
+<p>
+  {% if user.is_authenticated %} Welcome {{ user.get_username }}! {% else %}
+  {%endif %}
+</p>
+<p>Welcome to kswap, your gateway to totally free holiday accommodation!</p>
 
-{% extends "base_generic.html" %}
-
-{% block content %}
- <h1>kswap hopefully</h1>
- <p>
-   Welcome to kswap, your gateway to free and exciting holiday accommodation.
- </p>
-
- <p>kswap only launched recently but already has a massive:</p>
- <ul>
-   <li><strong>Properties available:</strong> {{ num_properties }}</li>
-   <li><strong>Users:</strong> {{ num_users }}</li>
-   <li><strong>And this many mouthwatering kashrut authorities:</strong> {{ num_kashrut }}</li>
- </ul>
+<ul>
+  <li>
+    <strong>There are </strong> {{ num_properties }}
+    <strong> Properties available</strong>
+  </li>
+  <li>
+    <strong>We are trusted by </strong> {{ num_users }}
+    <strong> users</strong>
+  </li>
+  <li>
+    <strong>We support </strong> {{ num_kashrut }}
+    <strong>Kashrut authorities </strong>
+  </li>
+</ul>
 {% endblock %}
