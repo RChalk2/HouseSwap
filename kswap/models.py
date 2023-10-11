@@ -18,7 +18,7 @@ from django.urls import reverse
 # uuid is a library that can generate random 128 bit objects for unqiue ids
 import uuid
 
-from cities_light.models import City
+# from cities_light.models import City
 from cities_light.models import Country
 
 
