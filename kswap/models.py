@@ -115,9 +115,9 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Property(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, help_text="Unique ID for this property"
-    )
+    # id = models.UUIDField(
+    #     primary_key=True, default=uuid.uuid4, help_text="Unique ID for this property"
+    # )
 
     # to store cities and countries I looked at this link
     # https://medium.com/@FatemeFouladkar/how-to-add-country-and-city-field-in-django-864f80b4c19e
@@ -141,7 +141,7 @@ class Property(models.Model):
     amenities = models.TextField()
     pet_friendly = models.BooleanField()
     accessibility_features = models.TextField()
-    proximity_to_public_transport = models.TextField()
+    proximity_to_public_transport = models.PositiveIntegerField()
     nearby_attractions = models.TextField()
     succah = models.BooleanField()
     passover_kitchen = models.BooleanField()
