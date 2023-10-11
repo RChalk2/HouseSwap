@@ -10,4 +10,9 @@ urlpatterns = [
     # and then all the pages here would be found under 127.../kwsap
     path("", views.home, name="home"),
     path("update_profile/", views.update_profile, name="update_profile"),
+    path(
+        "property_registration/",
+        views.property_registration,
+        name="property_registration",
+    ),
 ]

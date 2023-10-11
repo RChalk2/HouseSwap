@@ -130,14 +130,14 @@ class Property(models.Model):
     # python manage.py cities_light
     # city = models.CharField(max_length=100)
     # country = models.CharField(max_length=100)
-    city = models.ForeignKey(City, on_delete=models.RESTRICT, null=False)
+    # city = models.ForeignKey(City, on_delete=models.RESTRICT, null=False)
     country = models.ForeignKey(Country, on_delete=models.RESTRICT, null=False)
-
+    city = models.CharField(max_length=20)
     postcode = models.CharField(max_length=20)
     address = models.TextField()
     no_of_rooms = models.PositiveIntegerField()
     estimated_value = models.FloatField()
-    property_type = models.CharField(max_length=100)
+    property_type = models.CharField(max_length=50)
     amenities = models.TextField()
     pet_friendly = models.BooleanField()
     accessibility_features = models.TextField()

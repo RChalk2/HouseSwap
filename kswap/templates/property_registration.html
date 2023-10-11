@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %} {% block content %}
+<!--
+{{ form.as_p }} lays out the property fields each in a separate paragraph
+<input type="file" name="images" multiple> allows input of multiple images
+the view function can access these images with the code
+images = request.FILES.getlist('images')
+-->
+<form id="property_form" method="post" action="" enctype="multipart/form-data">
+  {% csrf_token %} {{ form.as_p }}
+
+  <input type="file" name="images" multiple />
+
+  <button type="submit">Save changes</button>
+</form>
+
+{% endblock %}

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Kashrut, Profile, Property, Image
 from django.contrib.auth.models import User
 
-from .forms import ProfileForm
+from .forms import ProfileForm, PropertyForm
 from django.contrib import messages
 
 # This import allows me to add @login_required before any view that I only
@@ -46,3 +46,21 @@ def home(request):
 
     # Render the template home.html with data in the context dictionary
     return render(request, "home.html", context=context)
+
+
+def property_registration(request):
+    if request.method == "POST":
+        form = PropertyForm(request.POST)
+        if form.is_valid():
+            property_form = form.save(commit=False)
+            property_form.owner = request.user
+            property_form.save()
+
+            images = request.FILES.getlist("images")
+            for image in images:
+                photo = Image(property=property_form, image=image)
+                photo.save()
+            return redirect("home")
+    else:
+        form = PropertyForm()
+    return render(request, "property_registration.html", {"form": form})
