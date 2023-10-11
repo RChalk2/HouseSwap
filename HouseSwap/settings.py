@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.mydomain.com",
     "https://*.127.0.0.1",
-    "https://web-production-e9e5.up.railway.app/",
+    "https://web-production-e9e5.up.railway.app",
 ]
 
 
