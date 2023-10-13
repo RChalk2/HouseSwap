@@ -18,8 +18,8 @@ from django.urls import reverse
 # uuid is a library that can generate random 128 bit objects for unqiue ids
 import uuid
 
-# from cities_light.models import City
-from cities_light.models import Country
+from django_countries.fields import CountryField
+
 
 
 class Kashrut(models.Model):
@@ -131,7 +131,7 @@ class Property(models.Model):
     # city = models.CharField(max_length=100)
     # country = models.CharField(max_length=100)
     # city = models.ForeignKey(City, on_delete=models.RESTRICT, null=False)
-    country = models.ForeignKey(Country, on_delete=models.RESTRICT, null=False)
+    country = CountryField()    
     city = models.CharField(max_length=20)
     postcode = models.CharField(max_length=20)
     address = models.TextField()
