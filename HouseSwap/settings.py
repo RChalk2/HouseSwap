@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "kswap.apps.KswapConfig",  # This object was created for us in /catalog/apps.py
-    "django-countries",
+    "django.contrib.countries",
     "users.apps.UsersConfig",
 ]
 
