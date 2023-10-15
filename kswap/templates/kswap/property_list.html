@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<!-- this template is based on
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Generic_views
+href="{{ property.get_absolute_url }}"
+-->
+
+  <h1>Property List</h1>
+  {% if property_list %}
+    <ul>
+      {% for property in property_list %}
+      <li>
+        <a href="{{ property.get_absolute_url }}">{{ property.country.name }}</a>
+        (Address: {{property.address}},
+         Property type: {{property.property_type}})
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no properties registered.</p>
+  {% endif %}
+
+{% endblock %}

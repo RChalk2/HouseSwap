@@ -26,3 +26,16 @@ urlpatterns = [
     # Include urls for login, logout and password management
     path("", include("users.urls")),
 ]
+
+
+# The four lines below are from:
+# https://medium.com/@biswajitpanda973/creating-a-dynamic-product-gallery-in-django-a-guide-to-multi-image-uploads-1cefdb418201
+# It adds a url to be used for serving media files
+# It uses the static function
+# settings.MEDIA_URL is set to  "/media/" in settings.py
+# settings.MEDIA_ROOT is set to os.path.join(BASE_DIR, "media") in settings.py
+# so this code tells django that the url /media should serve images in /media/images
+from django.conf import settings
+from django.conf.urls.static import static
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

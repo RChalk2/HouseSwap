@@ -64,3 +64,14 @@ def property_registration(request):
     else:
         form = PropertyForm()
     return render(request, "property_registration.html", {"form": form})
+
+
+from django.views import generic
+
+class PropertyListView(generic.ListView):
+    model = Property
+    context_object_name = 'property_list'
+
+
+class PropertyDetailView(generic.DetailView):
+    model = Property

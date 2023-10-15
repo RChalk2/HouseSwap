@@ -159,6 +159,9 @@ class Property(models.Model):
     # Assuming each property is tied to a one user
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def get_absolute_url(self):
+        """Returns the url to access a detailed record for a property"""
+        return reverse('property_detail', args=[str(self.id)])
     def __str__(self):
         return self.address
 
