@@ -14,11 +14,42 @@ https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Generic_views
   <p><strong>Succah:</strong> {{ property.succah }}</p>
   <p><strong>Passover kitchen:</strong> {{ property.passover_kitchen }}</p>
 
+<!-- GPT generated code -->
+
+<!-- Slick CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+
+<!-- Slick-theme (optional, for additional styling) -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+<!-- jQuery (Slick depends on jQuery) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Slick JS -->
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+
   {% load static %}
-  {% for image in property.image_set.all %}
-  <li>
-    <img src="{{image.image.url}}"/>
-  </li>
-  {% endfor %}
+
+
+  <div class="carousel">
+    {% for image in property.image_set.all %}
+      <div>
+        <img src="{{ image.image.url }}" alt="Property Image" />
+      </div>
+    {% endfor %}
+  </div>
+  
+  <script>
+    $(document).ready(function() {
+      $('.carousel').slick({
+        arrows: false,       // Show dot indicators
+        dots: true,       // Show dot indicators
+        infinite: true,  // Infinite looping
+        slidesToShow: 1, // Number of slides to show at once
+        adaptiveHeight: true // Adjust height based on content
+      });
+    });
+  </script>    
 
 {% endblock %}
