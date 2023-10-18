@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Property
+from .models import Profile, Property, Booking
 
 
 class ProfileForm(forms.ModelForm):
@@ -16,3 +16,9 @@ class PropertyForm(forms.ModelForm):
             "id",
             "owner",
         )
+
+class PropertyBookForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        exclude = ("user","property",)
+

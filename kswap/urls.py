@@ -16,6 +16,7 @@ urlpatterns = [
         name="property_registration",
     ),
     path('property_search/', views.PropertyListView.as_view(), name='property_search'),
-    path('property/<int:pk>', views.PropertyDetailView.as_view(), name='property_detail'),
+    path('property_detail/<int:pk>', views.PropertyDetailView.as_view(), name='property_detail'),
+    path('property_book/<int:pk>', views.property_book, name='property_book'),
 
 ]

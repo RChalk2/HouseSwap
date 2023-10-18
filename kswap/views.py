@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Kashrut, Profile, Property, Image
 from django.contrib.auth.models import User
 
-from .forms import ProfileForm, PropertyForm
+from .forms import ProfileForm, PropertyForm, PropertyBookForm
 from django.contrib import messages
 
 # This import allows me to add @login_required before any view that I only
@@ -75,3 +75,16 @@ class PropertyListView(generic.ListView):
 
 class PropertyDetailView(generic.DetailView):
     model = Property
+
+def property_book(request):
+    # POST is adding data to the Profile table in my database
+    if request.method == "POST":
+        form = PropertyBookForm(request.POST, instance=request.user.profile)
+        # This checks if the data is valid.  Because I removed most checks all data should be valid
+        if form.is_valid():
+            form.save()
+            messages.success(request, "You have sent a booking request")
+            return redirect("home")
+    else:
+        form = PropertyBookForm(instance=request.user.profile)
+    return render(request, "profile.html", {"form": form})
