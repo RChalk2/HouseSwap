@@ -76,15 +76,16 @@ class PropertyListView(generic.ListView):
 class PropertyDetailView(generic.DetailView):
     model = Property
 
-def property_book(request):
-    # POST is adding data to the Profile table in my database
+def property_book(request, pk):
     if request.method == "POST":
-        form = PropertyBookForm(request.POST, instance=request.user.profile)
-        # This checks if the data is valid.  Because I removed most checks all data should be valid
+        form = PropertyBookForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save()
-            messages.success(request, "You have sent a booking request")
+            booking_form = form.save(commit=False)
+            booking_form.property = Property.objects.get(pk=pk)
+            booking_form.user = request.user
+            booking_form.save()
+            messages.success(request, "You have sent a swap request")
             return redirect("home")
     else:
-        form = PropertyBookForm(instance=request.user.profile)
-    return render(request, "profile.html", {"form": form})
+        form = PropertyBookForm(user=request.user)
+    return render(request, "booking.html", {"form": form})

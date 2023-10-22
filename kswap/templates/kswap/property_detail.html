@@ -8,6 +8,9 @@ https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Generic_views
 
   <h1>Title: {{ property.address }}</h1>
 
+  <li>
+    <a href="{{ property.get_booking_url }}">Swap now</a>
+  </li>
   <p><strong>Country:</strong> {{ property.country.name }}</p>
   <!-- author detail link not yet defined -->
   <p><strong>City:</strong> {{ property.city }}</p>

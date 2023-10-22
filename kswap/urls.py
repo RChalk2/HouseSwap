@@ -20,3 +20,4 @@ urlpatterns = [
     path('property_book/<int:pk>', views.property_book, name='property_book'),
 
 ]
+

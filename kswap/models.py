@@ -163,6 +163,9 @@ class Property(models.Model):
         """Returns the url to access a detailed record for a property"""
         return reverse('property_detail', args=[str(self.id)])
     
+    def get_booking_url(self):
+        return reverse('property_book', args=[str(self.id)])
+    
     def __str__(self):
         return self.address
 
@@ -186,15 +189,18 @@ class Image(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/")
 
-class Booking(models.Model):
-    date_from = models.DateField()
-    date_to = models.DateField()
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    my_property = models.ForeignKey(Property, on_delete=models.CASCADE)
-
-    def get_absolute_url(self):
-        return reverse('property_book', args=[str(self.id)])
-
-
     
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+class Booking(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	property = models.ForeignKey(Property, on_delete=models.CASCADE)
+	date_from = models.DateField()
+	date_to = models.DateField()
+	my_property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="+")
+	review_text = models.TextField(max_length=100, null=True)
+	review_stars = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
+                                           	null=True)
+
+     
+
