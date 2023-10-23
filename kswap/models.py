@@ -192,15 +192,24 @@ class Image(models.Model):
     
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined'),
+    )
+
 class Booking(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	property = models.ForeignKey(Property, on_delete=models.CASCADE)
-	date_from = models.DateField()
-	date_to = models.DateField()
-	my_property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="+")
-	review_text = models.TextField(max_length=100, null=True)
-	review_stars = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    date_from = models.DateField()
+    date_to = models.DateField()
+    my_property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="+")
+    review_text = models.TextField(max_length=100, null=True)
+    review_stars = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
                                            	null=True)
+    status = models.CharField(max_length=10, 
+                              choices=STATUS_CHOICES, 
+                              default='pending')
 
      
 

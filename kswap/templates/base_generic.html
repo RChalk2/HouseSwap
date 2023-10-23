@@ -39,6 +39,18 @@
                 >Register a property</a
               >
             </li>
+            {% if pending_requests_count > 0 %}
+            <li>
+                <a href="{% url 'pending_bookings' %}?next={{ request.path }}">Swap requests</a>
+            </li>
+            {% endif %}
+            
+            {% if your_next_escapes_count > 0 %}
+            <li>
+                <a href="{% url 'your_next_escapes' %}?next={{ request.path }}">Swap requests</a>
+            </li>
+            {% endif %}
+
             <li><a href="{% url 'property_search' %}">Property search</a></li>
             <li><a href="">Leave a review</a></li>
             {% else %}

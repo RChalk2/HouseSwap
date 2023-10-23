@@ -71,6 +71,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "kswap.context_processors.pending_requests_count",
+                "kswap.context_processors.your_next_escapes_count",
             ],
         },
     },

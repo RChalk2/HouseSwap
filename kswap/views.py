@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Kashrut, Profile, Property, Image
+from .models import Kashrut, Profile, Property, Image, Booking
 from django.contrib.auth.models import User
 
 from .forms import ProfileForm, PropertyForm, PropertyBookForm
@@ -9,6 +9,8 @@ from django.contrib import messages
 # This import allows me to add @login_required before any view that I only
 # want to be available to users who are logged in
 from django.contrib.auth.decorators import login_required
+
+
 
 
 # The view below updates a user profile - it is copied from a tutorial
@@ -89,3 +91,47 @@ def property_book(request, pk):
     else:
         form = PropertyBookForm(user=request.user)
     return render(request, "booking.html", {"form": form})
+
+from datetime import datetime, timedelta
+
+def pending_bookings(request):
+
+    if request.method == 'POST':
+        # Capture the booking ID and action from POST data
+        booking_id = request.POST.get('booking_id')
+        action = request.POST.get('action')
+
+        # Retrieve the booking object
+        booking = Booking.objects.get(id=booking_id)
+
+        # Update the booking status based on the action
+        if action == "accept":
+            booking.status = 'accepted'
+        elif action == "decline":
+            booking.status = 'declined'
+        
+        booking.save()
+        return redirect("home")
+
+    else:
+        # Decline bookings with a start date in less than one day
+        Booking.objects.filter(date_from__lte=datetime.now() + timedelta(days=1), status='pending').update(status='declined')
+
+        # In the end,  I  created  the pending_requests_count  as a dict
+        # using something called a context processor which I stored in   the file
+        # called  context_processors.py in the same directory as this file
+        # And  then  I  had to add it to settings.py under HouseSwap
+        # and then the variable is always available in any template and not just
+        # when this view is being used
+        # Get pending bookings for current user's properties
+        bookings = Booking.objects.filter(property__owner=request.user, status='pending').order_by('-date_from')
+        #pending_requests_count = bookings.count()
+
+        return render(request, 'pending_bookings.html', {'bookings': bookings})
+
+
+def your_next_escapes(request):
+
+    bookings = Booking.objects.filter(property__owner=request.user, status='pending').order_by('-date_from')
+
+    return render(request, 'your_next_escapes.html', {'bookings': bookings})

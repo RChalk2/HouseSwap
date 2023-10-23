@@ -18,6 +18,8 @@ urlpatterns = [
     path('property_search/', views.PropertyListView.as_view(), name='property_search'),
     path('property_detail/<int:pk>', views.PropertyDetailView.as_view(), name='property_detail'),
     path('property_book/<int:pk>', views.property_book, name='property_book'),
-
+    path('pending_bookings/', views.pending_bookings, name='pending_bookings'),
+    path('your_next_escapes/', views.your_next_escapes, name='your_next_escapes'),
+    
 ]
 

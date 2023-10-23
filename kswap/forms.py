@@ -28,15 +28,7 @@ class PropertyBookForm(forms.ModelForm):
 class DateInput(forms.DateInput):
 	input_type = 'date'
 
-#class PropertyBookForm(forms.ModelForm):
-#    class Meta:
-#        model = Booking
-#        exclude = ("user","property", "review_text", "review_stars")
-#        widgets = {
-#             'date_from': DateInput(),
-#             'date_to': DateInput(),
-#             }
-
+    
 class PropertyBookForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
@@ -50,8 +42,9 @@ class PropertyBookForm(forms.ModelForm):
         
     class Meta:
         model = Booking
-        exclude = ("user", "review_text", "review_stars","property")
+        exclude = ("user", "review_text", "review_stars","property", "status")
         widgets = {
             'date_from': DateInput(),
             'date_to': DateInput(),
         }
+
