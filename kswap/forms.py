@@ -12,6 +12,11 @@ class ProfileForm(forms.ModelForm):
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
+        widgets = {
+            'home_description': forms.TextInput(attrs={
+                'size': '100',
+                'placeholder': 'Describe your home, like: A classic Victorian abode situated in the heart of...'})
+        }
         # exclude owner so that the user cannot choose it from all users.  Rather the function above ensures that the owner is the user
         exclude = (
             "id",

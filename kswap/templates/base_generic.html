@@ -33,7 +33,7 @@
               >
             </li>
             <li><a href="{% url 'update_profile' %}">Update profile</a></li>
-            <li><a href="">User dashboard</a></li>
+            <li><a href="{% url 'user_dashboard' %}">User dashboard</a></li>
             <li>
               <a href="{% url 'property_registration' %}"
                 >Register a property</a
@@ -47,7 +47,7 @@
             
             {% if your_next_escapes_count > 0 %}
             <li>
-                <a href="{% url 'your_next_escapes' %}?next={{ request.path }}">Swap requests</a>
+                <a href="{% url 'your_next_escapes' %}?next={{ request.path }}">Your next escapes</a>
             </li>
             {% endif %}
 

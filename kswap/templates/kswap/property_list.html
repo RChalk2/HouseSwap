@@ -12,9 +12,8 @@ href="{{ property.get_absolute_url }}"
     <ul>
       {% for property in property_list %}
       <li>
-        <a href="{{ property.get_absolute_url }}">{{ property.country.name }}</a>
-        (Address: {{property.address}},
-         Property type: {{property.property_type}})
+        <a href="{{ property.get_absolute_url }}">{{ property.address }}</a>
+        (Owner: {{property.owner}})
       </li>
       {% endfor %}
     </ul>

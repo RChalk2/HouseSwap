@@ -132,6 +132,21 @@ def pending_bookings(request):
 
 def your_next_escapes(request):
 
-    bookings = Booking.objects.filter(property__owner=request.user, status='pending').order_by('-date_from')
+    bookings = Booking.objects.filter(property__owner=request.user, status='accepted').order_by('-date_from')
 
     return render(request, 'your_next_escapes.html', {'bookings': bookings})
+
+def user_dashboard(request):
+    # Count the number of properties and users
+    num_properties = Property.objects.filter(owner=request.user).count()
+    profile = Profile.objects.get(user=request.user)
+    user_kashrut = profile.kashrut
+
+    context = {
+        "num_properties": num_properties,
+        "user_kashrut": user_kashrut,
+    }
+
+    # Render the template home.html with data in the context dictionary
+    return render(request, "user_dashboard.html", context=context)
+

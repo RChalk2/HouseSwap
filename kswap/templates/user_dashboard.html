@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %} {% block content %}
+<h1>Dashboard</h1>
+
+
+<ul>
+  <li>
+    <strong>You have </strong> {{ num_properties }}
+    <strong> properties registered</strong>
+  </li>
+
+  <li>
+    <strong>Your registered Kashrut authorities are: </strong> {{ user_kashrut }}
+   
+  </li>
+</ul>
+
+{% endblock %}
