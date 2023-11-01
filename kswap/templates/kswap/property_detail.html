@@ -6,16 +6,22 @@
 https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Generic_views
 -->
 
-  <h1>Title: {{ property.address }}</h1>
+<h1>Address: {{ property.address }}</h1>
 
-  <li>
-    <a href="{{ property.get_booking_url }}">Swap now</a>
-  </li>
-  <p><strong>Country:</strong> {{ property.country.name }}</p>
-  <!-- author detail link not yet defined -->
-  <p><strong>City:</strong> {{ property.city }}</p>
-  <p><strong>Succah:</strong> {{ property.succah }}</p>
-  <p><strong>Passover kitchen:</strong> {{ property.passover_kitchen }}</p>
+{% if property.owner == request.user %}
+<p>You own this property</p>
+{% else %}
+  <p>The owner of this property is <strong>{{ property.owner }}</strong>
+     If you would like to propose a swap with them click on the link:
+  </p>
+  <a href="{{ property.get_booking_url }}">Swap now</a>
+
+{% endif %}
+<p><strong>Country:</strong> {{ property.country.name }}</p>
+<!-- author detail link not yet defined -->
+<p><strong>City:</strong> {{ property.city }}</p>
+<p><strong>Succah:</strong> {{ property.succah }}</p>
+<p><strong>Passover kitchen:</strong> {{ property.passover_kitchen }}</p>
 
 <!-- GPT generated code -->
 

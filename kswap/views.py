@@ -15,6 +15,20 @@ from django.contrib.auth.decorators import login_required
 
 # The view below updates a user profile - it is copied from a tutorial
 def update_profile(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
     # POST is adding data to the Profile table in my database
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user.profile)
@@ -35,6 +49,20 @@ def update_profile(request):
 # When a page is requested, Django creates an HttpRequest object that
 # contains information about the request.
 def home(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
     # Count the number of properties and users
     num_properties = Property.objects.all().count()
     num_users = User.objects.all().count()
@@ -51,6 +79,20 @@ def home(request):
 
 
 def property_registration(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
     if request.method == "POST":
         form = PropertyForm(request.POST)
         if form.is_valid():
@@ -79,6 +121,20 @@ class PropertyDetailView(generic.DetailView):
     model = Property
 
 def property_book(request, pk):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
     if request.method == "POST":
         form = PropertyBookForm(request.POST, user=request.user)
         if form.is_valid():
@@ -95,6 +151,20 @@ def property_book(request, pk):
 from datetime import datetime, timedelta
 
 def pending_bookings(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
 
     if request.method == 'POST':
         # Capture the booking ID and action from POST data
@@ -130,13 +200,42 @@ def pending_bookings(request):
         return render(request, 'pending_bookings.html', {'bookings': bookings})
 
 
+from django.db.models import Q
 def your_next_escapes(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
 
-    bookings = Booking.objects.filter(property__owner=request.user, status='accepted').order_by('-date_from')
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
+
+    bookings = Booking.objects.filter(Q(property__owner=request.user) | Q(my_property__owner=request.user), status='accepted').order_by('-date_from')
 
     return render(request, 'your_next_escapes.html', {'bookings': bookings})
 
 def user_dashboard(request):
+    # Get the stack from the session (or create a new one if it doesn't exist)
+    history_stack = request.session.get('history_stack', [])
+
+    # Push the current path onto the stack
+    history_stack.append(request.path)
+
+    # Limit the size of the stack if necessary
+    while len(history_stack) > 10:  # e.g., limit to the last 10 pages
+        history_stack.pop(0)
+    print("History Stack:", history_stack)
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
     # Count the number of properties and users
     num_properties = Property.objects.filter(owner=request.user).count()
     profile = Profile.objects.get(user=request.user)
@@ -150,3 +249,20 @@ def user_dashboard(request):
     # Render the template home.html with data in the context dictionary
     return render(request, "user_dashboard.html", context=context)
 
+
+from django.shortcuts import redirect
+
+def go_back(request):
+    history_stack = request.session.get('history_stack', [])
+    
+    # Pop the current page
+    if history_stack:
+        history_stack.pop()
+
+    # Get the last page (or default to home if the stack is empty)
+    last_page = history_stack[-1] if history_stack else '/'
+
+    # Save the updated stack back into the session
+    request.session['history_stack'] = history_stack
+
+    return redirect(last_page)

@@ -25,6 +25,8 @@
         <div class="col-sm-2">
           {% block sidebar %}
           <ul class="sidebar-nav">
+            <a href="{% url 'go_back' %}">Back</a>
+
             <li><a href="{% url 'home' %}">Home</a></li>
             {% if user.is_authenticated %}
             <li>

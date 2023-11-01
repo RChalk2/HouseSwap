@@ -17,6 +17,7 @@ def sign_up(request):
     return render(request, "users/register.html", {"form": form})
 
 
+
 # from https://www.pythontutorial.net/django-tutorial/django-login/
 def sign_in(request):
     if request.method == "GET":
@@ -30,10 +31,11 @@ def sign_in(request):
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
-                messages.success(request, f"Hi {username.title()}, welcome back!")
                 return redirect("home")
+            else:
+                return render(request, "users/login.html", {"form": form, "form.errors": form.errors})
 
 
 def sign_out(request):

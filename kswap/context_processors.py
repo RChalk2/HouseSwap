@@ -10,8 +10,11 @@ def pending_requests_count(request):
         return {'pending_requests_count': count}
     return {}
 
+
+from django.db.models import Q
 def your_next_escapes_count(request):
     if request.user.is_authenticated:
-        count = Booking.objects.filter(property__owner=request.user, status='accepted').count()
+        bookings = Booking.objects.filter(Q(property__owner=request.user) | Q(my_property__owner=request.user), status='accepted').order_by('-date_from')
+        count = bookings.count()
         return {'your_next_escapes_count': count}
     return {}

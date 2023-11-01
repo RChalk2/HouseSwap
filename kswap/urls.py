@@ -21,5 +21,7 @@ urlpatterns = [
     path('pending_bookings/', views.pending_bookings, name='pending_bookings'),
     path('your_next_escapes/', views.your_next_escapes, name='your_next_escapes'),
     path('user_dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('go_back/', views.go_back, name='go_back'),
+
 ]
 

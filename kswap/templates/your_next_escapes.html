@@ -4,12 +4,22 @@
 
 {% for booking in bookings %}
     <div>
-        <strong>Their Property:</strong>
-        <a href="{% url 'property_detail' booking.my_property.id %}">{{ booking.my_property.address  }}</a>
-        <br>
-        <strong>Your Property They Want:</strong>
-        <a href="{% url 'property_detail' booking.property.id %}">{{booking.property.address }}</a>
-        <br>
+        {% if booking.property.owner == request.user %}
+            <strong>Their Property:</strong>
+            <a href="{% url 'property_detail' booking.my_property.id %}">{{ booking.my_property.address  }}</a>
+            <br>
+            <strong>Your Property They Want:</strong>
+            <a href="{% url 'property_detail' booking.property.id %}">{{booking.property.address }}</a>
+            <br>
+        {% else %}
+            <strong>Their Property:</strong>
+            <a href="{% url 'property_detail' booking.property.id %}">{{booking.property.address }}</a>
+            <br>
+            <strong>Your Property They Want:</strong>
+            <a href="{% url 'property_detail' booking.my_property.id %}">{{ booking.my_property.address  }}</a>
+            <br>
+        {% endif %}
+
         {{ booking.date_from }} - {{ booking.date_to }}
         <form method="post">
             {% csrf_token %}
