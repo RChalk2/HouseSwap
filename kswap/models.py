@@ -21,7 +21,8 @@ import uuid
 from django_countries.fields import CountryField
 
 
-
+# Kashrut model contains list of kashrut authorities
+# maintained by admin
 class Kashrut(models.Model):
     """
     Model representing a kashrut organisation.
@@ -42,6 +43,9 @@ class Kashrut(models.Model):
         return self.name
 
 
+# Profile information of a user.  Separate to the basic
+# User table which is defined by Django.  Allows me
+# to add various details without affecting login and register
 class Profile(models.Model):
     """
     Model extending the profile information of the Django User table
@@ -114,6 +118,7 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
+# Property table stores the details for each property
 class Property(models.Model):
     # id = models.UUIDField(
     #     primary_key=True, default=uuid.uuid4, help_text="Unique ID for this property"
@@ -131,7 +136,7 @@ class Property(models.Model):
     # city = models.CharField(max_length=100)
     # country = models.CharField(max_length=100)
     # city = models.ForeignKey(City, on_delete=models.RESTRICT, null=False)
-    country = CountryField()    
+    country = CountryField()
     city = models.CharField(max_length=20)
     postcode = models.CharField(max_length=20)
     address = models.CharField(max_length=30)
@@ -162,14 +167,15 @@ class Property(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a detailed record for a property"""
         return reverse('property_detail', args=[str(self.id)])
-    
+
     def get_booking_url(self):
         return reverse('property_book', args=[str(self.id)])
-    
+
     def __str__(self):
         return self.address
 
 
+# Image table
 # based on help from
 # https://medium.com/@biswajitpanda973/creating-a-dynamic-product-gallery-in-django-a-guide-to-multi-image-uploads-1cefdb418201
 # the class below is to store Images
@@ -189,7 +195,7 @@ class Image(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/")
 
-    
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 STATUS_CHOICES = (
@@ -204,12 +210,26 @@ class Booking(models.Model):
     date_from = models.DateField()
     date_to = models.DateField()
     my_property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="+")
-    review_text = models.TextField(max_length=100, null=True)
-    review_stars = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
-                                           	null=True)
-    status = models.CharField(max_length=10, 
-                              choices=STATUS_CHOICES, 
+    status = models.CharField(max_length=10,
+                              choices=STATUS_CHOICES,
                               default='pending')
 
-     
 
+# Review class
+# This should be the last class I need for this proof of concept
+# It will allow me to store two reviews for each booking
+# One for the person who proposed the swap (the owner of my_property)
+# who can leave a review of property
+# And one for the person who accepted the swap (the owner of property)
+# who can leave a review about my_property
+class Review(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='reviews')
+    property_reviewed = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='reviews_received')
+    # The reviewer is the person who is writing the review
+    # which will be the owner of property or of my_property
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_given')
+    text = models.TextField(max_length=100, null=True, blank=True)
+    stars = models.PositiveIntegerField(validators=[MaxValueValidator(5)], null=True, blank=True)
+
+    def __str__(self):
+        return f'Review for property {self.property_reviewed.id} by {self.reviewer.username}'

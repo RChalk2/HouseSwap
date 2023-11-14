@@ -29,37 +29,21 @@
 
             <li><a href="{% url 'home' %}">Home</a></li>
             {% if user.is_authenticated %}
-            <li>
-              <a href="{% url 'logout' %}?next={{ request.path }}"
-                >Logout {{ user.get_username }}</a
-              >
-            </li>
-            <li><a href="{% url 'update_profile' %}">Update profile</a></li>
-            <li><a href="{% url 'user_dashboard' %}">User dashboard</a></li>
-            <li>
-              <a href="{% url 'property_registration' %}"
-                >Register a property</a
-              >
-            </li>
-            {% if pending_requests_count > 0 %}
-            <li>
-                <a href="{% url 'pending_bookings' %}?next={{ request.path }}">Swap requests</a>
-            </li>
-            {% endif %}
-            
-            {% if your_next_escapes_count > 0 %}
-            <li>
-                <a href="{% url 'your_next_escapes' %}?next={{ request.path }}">Your next escapes</a>
-            </li>
-            {% endif %}
-
-            <li><a href="{% url 'property_search' %}">Property search</a></li>
-            <li><a href="">Leave a review</a></li>
+                <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout {{ user.get_username }}</a></li>
+                <li><a href="{% url 'update_profile' %}">Update profile</a></li>
+                <li><a href="{% url 'user_dashboard' %}">User dashboard</a></li>
+                <li><a href="{% url 'property_registration' %}">Register a property</a></li>
+                {% if pending_requests_count > 0 %}
+                    <li><a href="{% url 'pending_bookings' %}?next={{ request.path }}">Swap requests</a></li>
+                {% endif %}
+                {% if your_next_escapes_count > 0 %}
+                    <li><a href="{% url 'your_next_escapes' %}?next={{ request.path }}">Your next escapes</a></li>
+                {% endif %}
+                <li><a href="{% url 'property_search' %}">Property search</a></li>
+                <li><a href="{% url 'leave_review' %}">Leave a Review</a></li>
             {% else %}
-            <li>
-              <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
-            </li>
-            <li><a href="{% url 'property_search' %}">Property search</a></li>
+                <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
+                <li><a href="{% url 'property_search' %}">Property search</a></li>
             {% endif %}
           </ul>
           {% endblock %}

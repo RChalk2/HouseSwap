@@ -1,0 +1,27 @@
+<!-- In leave_review.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Leave a Review</h2>
+  <form method="post">
+    {% csrf_token %}
+
+    <label for="booking_id">Select Booking:</label>
+    <select name="booking_id" id="booking_id" required>
+      {% for booking in bookings %}
+        <option value="{{ booking.id }}">Booking #{{ booking.id }} ({{ booking.property.name }})</option>
+      {% empty %}
+        <option>No eligible bookings found</option>
+      {% endfor %}
+    </select>
+
+    <label for="review_text">Review Text:</label>
+    <textarea name="review_text" id="review_text" required></textarea>
+
+    <label for="review_stars">Stars (1-5):</label>
+    <input type="number" name="review_stars" id="review_stars" min="1" max="5" required>
+
+    <button type="submit">Submit Review</button>
+  </form>
+{% endblock %}
