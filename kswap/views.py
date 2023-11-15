@@ -98,7 +98,6 @@ def update_profile(request):
         # This checks if the data is valid.  Because I removed most checks all data should be valid
         if form.is_valid():
             form.save()
-            messages.success(request, "You have successfully updated your profile.")
             return redirect("home")
     else:
         form = ProfileForm(instance=request.user.profile)
@@ -250,7 +249,6 @@ def property_book(request, pk):
             booking_form.property = Property.objects.get(pk=pk)
             booking_form.user = request.user
             booking_form.save()
-            messages.success(request, "You have sent a swap request")
             return redirect("home")
     else:
         form = PropertyBookForm(user=request.user)
@@ -362,7 +360,6 @@ def leave_review(request):
         booking = get_object_or_404(Booking, id=booking_id, user=request.user)
 
         leave_review_sub(booking, request.user, review_text, int(review_stars))
-        messages.success(request, "Your review has been submitted successfully.")
         return redirect("home")
 
     return render(request, 'leave_review.html', {'bookings': eligible_bookings})
