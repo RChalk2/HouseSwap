@@ -30,39 +30,51 @@ from django.views import generic
 
 # my own merge sort code
 def merge_sort(array):
+    # Base case for recursion: if the array is empty or has a single element, it's already sorted
     if len(array) > 1:
+        # Finding the middle of the array
         mid = len(array) // 2
+        # Dividing the array elements into two halves
         left = array[:mid]
         right = array[mid:]
 
-        self.merge_sort(left)
-        self.merge_sort(right)
+        # Recursive call on each half
+        merge_sort(left)
+        merge_sort(right)
 
-        i = 0
-        j = 0
-        k = 0
+        # Initial indexes for left, right and merged subarrays
+        i = 0  # Index for the left subarray
+        j = 0  # Index for the right subarray
+        k = 0  # Index for the merged array
 
-        # Sorting in descending order
+        # Merging the subarrays back into array
+        # Sorting in descending order based on the 'date_from' attribute
         while i < len(left) and j < len(right):
             if left[i].date_from > right[j].date_from:
+                # If the current element in left is greater, add it to the merged array
                 array[k] = left[i]
                 i += 1
             else:
+                # If the current element in right is greater, add it to the merged array
                 array[k] = right[j]
                 j += 1
             k += 1
 
+        # Checking if any element was left in the left subarray
         while i < len(left):
             array[k] = left[i]
             i += 1
             k += 1
 
+        # Checking if any element was left in the right subarray
         while j < len(right):
             array[k] = right[j]
             j += 1
             k += 1
 
+        # The merged array is returned, sorted in descending order based on 'date_from'
         return array
+
 
 
 # The view below updates a user profile - it is copied from a tutorial
