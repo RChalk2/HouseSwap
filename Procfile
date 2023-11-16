@@ -1,2 +1,2 @@
-web: python manage.py migrate && python manage.py collectstatic --no-input && gunicorn HouseSwap.wsgi
+web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn HouseSwap.wsgi
 
