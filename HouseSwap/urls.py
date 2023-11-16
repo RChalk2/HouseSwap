@@ -37,6 +37,11 @@ urlpatterns = [
 # so this code tells django that the url /media should serve images in /media/images
 from django.conf import settings
 from django.conf.urls.static import static
-#if settings.DEBUG:
-#    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+else:
+    # I will use Django  to serve my pictures even in production
+    # This is not recommended - it seems I should really set up  some other
+    # kind of  server for this
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
